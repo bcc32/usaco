@@ -20,19 +20,10 @@ bool npred(char ch)
     return !(ch >= 'a' && ch <= 'z') && !(ch >= 'A' && ch <= 'Z');
 }
 
-bool palinq(string s)
+char tol(char ch)
 {
-    int c = s.size() - 1;
-    for (int i = 0; i < s.size() / 2; i++, c--)
-        if (s[i] >= 'a' && s[i] <= 'z')
-            if (s[c] >= 'a' && s[c] <= 'z' && s[c] == s[i]) continue;
-            else if (s[c] == s[i] - 32) continue;
-            else return false;
-        else
-            if (s[c] >= 'A' && s[c] <= 'Z' && s[c] == s[i]) continue;
-            else if (s[c] == s[i] + 32) continue;
-            else return false;
-    return true;
+    if (ch >= 'A' && ch <= 'Z') return ch + 32;
+    else return ch;
 }
 
 int main(void)
@@ -49,13 +40,28 @@ int main(void)
         if (!pred(s[i])) continue;
         for (int j = m + 1; i + j <= s.size(); j++)
         {
+            cerr << i << "\t" << j << endl;
             if (!pred(s[i + j - 1])) continue;
-            ostringstream a;
-            for (int k = i; k < i + j; k++)
-                if (pred(s[k]))
-                    a << s[k];
-            if (palinq(a.str()))
+            bool palin = true;
+            int x = i, y = i + j - 1;
+            while (x < y)
             {
+                while (!pred(s[x])) x++;
+                while (!pred(s[y])) y--;
+                if (tol(s[x]) != tol(s[y]))
+                {
+                    palin = false;
+                    break;
+                }
+                else
+                {
+                    x++;
+                    y--;
+                }
+            }
+            if (palin)
+            {
+                cerr << s.substr(i, j) << endl;
                 m = j;
                 n = i;
             }
