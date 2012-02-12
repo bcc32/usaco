@@ -42,28 +42,30 @@ int main(void)
         {
             cerr << i << "\t" << j << endl;
             if (!pred(s[i + j - 1])) continue;
-            bool palin = true;
-            int x = i, y = i + j - 1;
-            while (x < y)
+            string a = s.substr(i, j);
+            string::reverse_iterator it = a.rbegin();
+            int k;
+            for (k = i + j; k < s.size() && it < a.rend(); k++)
+                if (s[k] == *it || !pred(*it)) it++;
+                else if (pred(s[k])) break;
+            if (it == a.rend())
             {
-                while (!pred(s[x])) x++;
-                while (!pred(s[y])) y--;
-                if (tol(s[x]) != tol(s[y]))
-                {
-                    palin = false;
-                    break;
-                }
-                else
-                {
-                    x++;
-                    y--;
-                }
-            }
-            if (palin)
-            {
-                cerr << s.substr(i, j) << endl;
+                cerr << s.substr(i, k - i) << endl;
                 m = j;
                 n = i;
+                continue;
+            }
+            a.erase(a.end() - 1);
+            it = a.rbegin();
+            for (k = i + j; k < s.size() && it < a.rend(); k++)
+                if (s[k] == *it || !pred(*it)) it++;
+                else if (pred(s[k])) break;
+            if (it == a.rend())
+            {
+                cerr << s.substr(i, k - i) << endl;
+                m = j;
+                n = i;
+                continue;
             }
         }
     }
